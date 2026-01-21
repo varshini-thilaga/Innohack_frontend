@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Navigation Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Voice Navigation Assistant</h1>
+            <p>Say "Take me to library" or click the microphone</p>
+        </header>
+
+        <main>
+            <section class="voice-controls">
+                <button id="startListening" class="voice-btn primary">
+                    🎤 Start Voice Input
+                </button>
+                <button id="emergencyBtn" class="voice-btn emergency">
+                    🚨 Emergency SOS
+                </button>
+                <div id="voiceStatus" class="status">Ready to listen...</div>
+            </section>
+
+            <section class="input-section">
+                <label for="destination">Destination:</label>
+                <input type="text" id="destination" placeholder="Enter destination or use voice">
+                <button id="getRoute" class="btn primary">Get Route</button>
+            </section>
+
+            <section class="map-section">
+                <div id="map"></div>
+            </section>
+
+            <section class="nav-info">
+                <div id="currentInstruction" class="instruction"></div>
+                <div id="routeStats" class="stats"></div>
+                <div id="safetyAlerts" class="alerts"></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
