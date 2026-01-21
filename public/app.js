@@ -5,6 +5,7 @@ class VoiceNavigationApp {
         this.recognition = null;
         this.synthesis = window.speechSynthesis;
         this.isListening = false;
+        this.socket = io('https://innohackbackend.onrender.com');
         
         this.init();
     }
@@ -105,9 +106,26 @@ class VoiceNavigationApp {
         const destCoords = this.getDestinationCoords(destination);
         this.updateStatus(`Calculating route to ${destination}...`);
         
-        // Create route data directly
-        const routeData = this.createRoute(this.currentPosition, destCoords, destination);
-        this.displayRoute(routeData, destination, destCoords);
+        // Call backend API for route calculation
+        fetch('https://innohackbackend.onrender.com/api/route', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                start: this.currentPosition,
+                end: destCoords,
+                destination: destination
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            this.displayRoute(data, destination, destCoords);
+        })
+        .catch(error => {
+            console.error('Route error:', error);
+            // Fallback to local route creation
+            const routeData = this.createRoute(this.currentPosition, destCoords, destination);
+            this.displayRoute(routeData, destination, destCoords);
+        });
     }
 
     createRoute(start, end, destination) {
@@ -287,7 +305,7 @@ class VoiceNavigationApp {
         this.speak('Emergency alert activated');
         
         try {
-            const response = await fetch('/api/emergency', {
+            const response = await fetch('https://innohackbackend.onrender.com/api/emergency', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -297,6 +315,7 @@ class VoiceNavigationApp {
                 })
             });
             
+            const result = await response.json();
             this.speak('Emergency alert sent successfully');
         } catch (error) {
             this.speak('Emergency alert failed');
